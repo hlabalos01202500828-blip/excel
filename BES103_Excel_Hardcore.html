@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BES 103 — Excel Hardcore 100 Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:ital,wght@0,300;0,400;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0d0f;
+  --s1: #111418;
+  --s2: #181d23;
+  --s3: #1f262f;
+  --border: #252e38;
+  --border2: #2f3d4a;
+  --text: #cdd5de;
+  --dim: #5d7185;
+  --muted: #2e3d4a;
+  --green: #22c55e;
+  --gdim: rgba(34,197,94,.13);
+  --gbright: rgba(34,197,94,.25);
+  --red: #f87171;
+  --rdim: rgba(248,113,113,.12);
+  --blue: #60a5fa;
+  --bdim: rgba(96,165,250,.1);
+  --amber: #fbbf24;
+  --adim: rgba(251,191,36,.1);
+  --teal: #2dd4bf;
+  --xl-green: #1d7a45;
+  --xl-header: #1a5c34;
+  --mono: 'JetBrains Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --body: 'Outfit', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.6; min-height: 100vh; }
+
+/* ─── HEADER ─── */
+.header {
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  padding: 2.5rem 2rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 10% 50%, rgba(29,122,69,.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.header-inner { max-width: 1000px; margin: 0 auto; position: relative; }
+.header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+.badge {
+  font-family: var(--mono); font-size: .58rem; letter-spacing: .25em; text-transform: uppercase;
+  background: var(--xl-green); color: #fff;
+  padding: .28rem .9rem; border-radius: 2px; display: inline-block; margin-bottom: .8rem;
+}
+h1 { font-family: var(--display); font-size: clamp(3rem, 6vw, 5.5rem); line-height: .92; letter-spacing: .02em; }
+h1 em { color: var(--green); font-style: normal; }
+.tagline { font-size: .95rem; color: var(--dim); margin-top: .6rem; font-weight: 300; max-width: 460px; }
+.hstats { display: flex; flex-direction: column; gap: .5rem; flex-shrink: 0; }
+.hstat {
+  background: var(--s2); border: 1px solid var(--border); border-radius: 6px;
+  padding: .5rem 1.2rem; text-align: right; min-width: 140px;
+}
+.hstat-n { font-family: var(--display); font-size: 2rem; color: var(--green); line-height: 1; }
+.hstat-l { font-family: var(--mono); font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+@media (max-width: 580px) { .hstats { flex-direction: row; flex-wrap: wrap; } .hstat { min-width: 100px; text-align: left; } }
+
+/* ─── STICKY SCORE BAR ─── */
+.scorebar {
+  position: sticky; top: 0; z-index: 400;
+  background: rgba(11,13,15,.96); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: .55rem 1.5rem;
+  display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
+}
+.sc-num { font-family: var(--display); font-size: 1.7rem; color: var(--green); line-height: 1; }
+.sc-lbl { font-family: var(--mono); font-size: .57rem; text-transform: uppercase; letter-spacing: .14em; color: var(--dim); }
+.sc-pct { font-family: var(--mono); font-size: .78rem; color: var(--dim); min-width: 35px; }
+.progress { flex: 1; min-width: 80px; height: 3px; background: var(--s3); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--xl-green), var(--green)); border-radius: 99px; transition: width .45s ease; }
+.btn-reset {
+  font-family: var(--mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase;
+  background: none; border: 1px solid var(--border2); color: var(--dim);
+  padding: .32rem .8rem; border-radius: 4px; cursor: pointer; transition: all .2s; margin-left: auto;
+}
+.btn-reset:hover { border-color: var(--red); color: var(--red); }
+
+/* ─── TABS ─── */
+.tabs { background: var(--s1); border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex-shrink: 0; background: none; border: none; border-bottom: 2px solid transparent;
+  font-family: var(--mono); font-size: .63rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--dim); padding: .85rem 1.4rem; cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+.tab .pill {
+  font-size: .58rem; background: var(--gdim); color: var(--green);
+  padding: .1rem .42rem; border-radius: 3px; margin-left: .35rem;
+}
+
+/* ─── MAIN ─── */
+.main { max-width: 920px; margin: 0 auto; padding: 1.8rem 1.25rem 6rem; }
+.panel { display: none; animation: fadeup .3s ease; }
+.panel.active { display: block; }
+@keyframes fadeup { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+/* ─── SECTION INTRO ─── */
+.sec-intro {
+  background: var(--s2); border: 1px solid var(--border); border-left: 3px solid var(--green);
+  border-radius: 8px; padding: 1.1rem 1.4rem; margin-bottom: 1.4rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+}
+.sec-icon { font-size: 1.8rem; flex-shrink: 0; }
+.sec-title { font-family: var(--display); font-size: 1.4rem; letter-spacing: .05em; margin-bottom: .15rem; }
+.sec-meta { font-family: var(--mono); font-size: .6rem; color: var(--green); letter-spacing: .12em; text-transform: uppercase; }
+.sec-desc { font-size: .9rem; color: var(--dim); margin-top: .25rem; }
+
+/* ─── SECTION SCORE ROW ─── */
+.sec-scorebar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+.sec-sc { font-family: var(--display); font-size: 2.4rem; color: var(--green); line-height: 1; }
+.sec-sclbl { font-family: var(--mono); font-size: .58rem; text-transform: uppercase; letter-spacing: .1em; color: var(--dim); }
+.sec-bar { flex: 1; height: 5px; background: var(--s3); border-radius: 99px; overflow: hidden; }
+.sec-barfill { height: 100%; background: linear-gradient(90deg, var(--xl-green), var(--green)); border-radius: 99px; transition: width .5s ease; }
+
+/* ─── QUESTION CARD ─── */
+.qcard { background: var(--s1); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 1.2rem; overflow: hidden; transition: border-color .25s; }
+.qcard.correct { border-color: var(--green); }
+.qcard.wrong { border-color: var(--red); }
+.qcard.done { border-color: var(--blue); }
+
+.qhead { padding: .95rem 1.3rem .8rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: .75rem; }
+.qnum {
+  font-family: var(--mono); font-size: .58rem; letter-spacing: .12em; text-transform: uppercase;
+  background: var(--s3); color: var(--dim); padding: .22rem .6rem; border-radius: 3px;
+  flex-shrink: 0; white-space: nowrap; margin-top: .1rem;
+}
+.qtext { font-size: .97rem; line-height: 1.55; flex: 1; }
+.qtext b { color: var(--amber); }
+.qtext code { font-family: var(--mono); background: var(--s3); color: var(--amber); padding: .1rem .4rem; border-radius: 3px; font-size: .84em; }
+
+.qbody { padding: .9rem 1.3rem 1.1rem; }
+
+/* ─── EXCEL MOCK WINDOW ─── */
+.xl-mock {
+  border: 1.5px solid #4a4a4a;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: .95rem;
+  font-size: .8rem;
+  box-shadow: 0 6px 24px rgba(0,0,0,.5);
+}
+.xl-titlebar {
+  background: linear-gradient(to bottom, #217346, #1a5c34);
+  color: #fff; font-family: var(--body); font-size: .72rem; font-weight: 500;
+  padding: .3rem .8rem;
+  display: flex; align-items: center; gap: .5rem;
+}
+.xl-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.25); flex-shrink: 0; }
+.xl-fname { font-family: var(--mono); font-size: .65rem; opacity: .85; }
+.xl-toolbar {
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  padding: .22rem .6rem;
+  display: flex; align-items: center; gap: .5rem;
+}
+.xl-namebox {
+  font-family: var(--mono); font-size: .72rem; color: #111;
+  background: #fff; border: 1px solid #bbb; border-radius: 2px;
+  padding: .15rem .5rem; min-width: 52px; text-align: center; flex-shrink: 0;
+}
+.xl-fxbtn {
+  font-family: var(--mono); font-size: .68rem; color: #217346;
+  font-style: italic; font-weight: 700; flex-shrink: 0; padding: 0 .25rem;
+}
+.xl-sep { width: 1px; height: 14px; background: #ccc; flex-shrink: 0; }
+.xl-formulabar {
+  flex: 1; font-family: var(--mono); font-size: .78rem; color: #1a1a1a;
+  background: transparent; border: none; outline: none; padding: .05rem .2rem;
+  font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.xl-grid-wrap { overflow-x: auto; }
+table.xl {
+  border-collapse: collapse; width: 100%; min-width: 300px;
+  font-family: var(--mono); font-size: .76rem;
+}
+table.xl th {
+  background: #e8e8e8; color: #444; font-weight: 600;
+  border: 1px solid #bdbdbd; padding: .24rem .6rem;
+  text-align: center; white-space: nowrap; font-family: var(--body); font-size: .72rem;
+}
+table.xl td {
+  border: 1px solid #d4d4d4; padding: .24rem .65rem;
+  background: #fff; color: #111; white-space: nowrap;
+}
+table.xl td.r { text-align: right; }
+table.xl td.rh { background: #e8e8e8; color: #444; font-weight: 600; text-align: center; font-size: .7rem; }
+table.xl td.active { background: #cce5ff; border: 2px solid #1565c0; font-weight: 700; color: #0d3c7a; }
+table.xl td.result { background: #e8f5e9; border: 2px solid #2e7d32; font-weight: 700; color: #1b5e20; text-align: center; }
+table.xl td.hi { background: #fff9c4; font-weight: 600; color: #5d4037; }
+table.xl td.err { background: #ffeaea; color: #c62828; font-weight: 700; text-align: center; }
+table.xl td.gr { background: #e8f5e9; color: #2e7d32; }
+.xl-caption {
+  background: #217346; color: #fff;
+  font-family: var(--mono); font-size: .63rem; letter-spacing: .08em;
+  text-align: center; padding: .28rem;
+  border-top: 1px solid #1a5c34;
+}
+
+/* ─── MCQ OPTIONS ─── */
+.opts { display: flex; flex-direction: column; gap: .45rem; margin-top: .2rem; }
+.opt {
+  display: flex; align-items: flex-start; gap: .72rem;
+  padding: .6rem .95rem; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; font-size: .93rem; background: var(--bg); transition: all .17s;
+}
+.opt:hover { border-color: var(--border2); background: var(--s2); }
+.opt.sel-ok { background: var(--gdim); border-color: var(--green); color: #86efac; }
+.opt.sel-no { background: var(--rdim); border-color: var(--red); color: #fca5a5; }
+.opt.reveal { background: var(--gdim); border-color: var(--green); color: #86efac; }
+.opt.frozen { cursor: not-allowed; opacity: .6; }
+.opt code { font-family: var(--mono); background: rgba(0,0,0,.25); padding: .08rem .35rem; border-radius: 3px; font-size: .82em; color: var(--amber); }
+.optltr {
+  font-family: var(--mono); font-size: .63rem; font-weight: 700;
+  flex-shrink: 0; width: 1.35rem; height: 1.35rem;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--s3); color: var(--dim); border-radius: 3px; margin-top: .1rem;
+}
+.opt.sel-ok .optltr { background: rgba(34,197,94,.3); color: var(--green); }
+.opt.sel-no .optltr { background: rgba(248,113,113,.3); color: var(--red); }
+.opt.reveal .optltr { background: rgba(34,197,94,.3); color: var(--green); }
+
+/* ─── T/F ─── */
+.tf-row { display: flex; gap: .75rem; }
+.tf-btn {
+  flex: 1; padding: .75rem 1rem; text-align: center; cursor: pointer;
+  border-radius: 7px; border: 1px solid var(--border);
+  font-family: var(--mono); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+  background: var(--bg); color: var(--dim); transition: all .18s;
+}
+.tf-btn.true-btn:hover { border-color: var(--green); color: var(--green); background: var(--gdim); }
+.tf-btn.false-btn:hover { border-color: var(--red); color: var(--red); background: var(--rdim); }
+.tf-btn.sel-ok { background: var(--gdim); border-color: var(--green); color: #86efac; }
+.tf-btn.sel-no { background: var(--rdim); border-color: var(--red); color: #fca5a5; }
+.tf-btn.reveal { background: var(--gdim); border-color: var(--green); color: #86efac; }
+.tf-btn.frozen { cursor: not-allowed; }
+
+/* ─── IDENTIFICATION ─── */
+.id-row { display: flex; gap: .6rem; align-items: stretch; }
+.id-inp {
+  flex: 1; background: var(--s2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: .62rem 1rem;
+  font-family: var(--mono); font-size: .85rem; color: var(--text);
+  outline: none; transition: border-color .2s;
+}
+.id-inp:focus { border-color: var(--blue); }
+.id-inp.ok { border-color: var(--green); background: var(--gdim); color: #86efac; }
+.id-inp.no { border-color: var(--red); background: var(--rdim); color: #fca5a5; }
+.id-inp:disabled { cursor: not-allowed; }
+.id-btn {
+  font-family: var(--mono); font-size: .63rem; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--adim); border: 1px solid rgba(251,191,36,.3); color: var(--amber);
+  padding: .6rem 1.1rem; border-radius: 6px; cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.id-btn:hover { background: var(--amber); color: var(--bg); }
+.id-btn:disabled { cursor: not-allowed; opacity: .4; }
+.id-hint { font-family: var(--mono); font-size: .62rem; color: var(--muted); margin-bottom: .6rem; letter-spacing: .04em; }
+
+/* ─── FEEDBACK ─── */
+.feedback { display: none; margin-top: .8rem; padding: .75rem 1rem; border-radius: 6px; font-size: .88rem; line-height: 1.6; }
+.feedback.show { display: block; }
+.feedback.ok { background: var(--gdim); border: 1px solid rgba(34,197,94,.2); color: #86efac; }
+.feedback.no { background: var(--rdim); border: 1px solid rgba(248,113,113,.2); color: #fca5a5; }
+.feedback.info { background: var(--bdim); border: 1px solid rgba(96,165,250,.2); color: #93c5fd; }
+.feedback strong { display: block; font-family: var(--mono); font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; margin-bottom: .3rem; }
+.feedback code { font-family: var(--mono); background: rgba(0,0,0,.3); padding: .08rem .35rem; border-radius: 3px; font-size: .85em; color: var(--amber); }
+
+/* ─── DIVIDER ─── */
+.divider {
+  text-align: center; font-family: var(--mono); font-size: .58rem; letter-spacing: .25em;
+  text-transform: uppercase; color: var(--muted); margin: 1.5rem 0;
+  display: flex; align-items: center; gap: .8rem;
+}
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ─── FOOTER ─── */
+.footer { text-align: center; padding: 2rem; font-family: var(--mono); font-size: .6rem; letter-spacing: .08em; color: var(--muted); border-top: 1px solid var(--border); margin-top: 3rem; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div class="badge">BES 103 · COMPROG · USep College of Engineering</div>
+        <h1>EXCEL<br><em>100</em><br>HARDCORE</h1>
+        <p class="tagline">Formulas · Functions · Commands · Spreadsheet Scenarios · Formula Bar Identification</p>
+      </div>
+      <div class="hstats">
+        <div class="hstat"><div class="hstat-n">40</div><div class="hstat-l">Spreadsheet Scenarios</div></div>
+        <div class="hstat"><div class="hstat-n">30</div><div class="hstat-l">Multiple Choice</div></div>
+        <div class="hstat"><div class="hstat-n">20</div><div class="hstat-l">True / False</div></div>
+        <div class="hstat"><div class="hstat-n">10</div><div class="hstat-l">Identification</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SCORE BAR -->
+<div class="scorebar">
+  <div><div class="sc-lbl">Score</div><div class="sc-num" id="sc-total">0 / 100</div></div>
+  <div class="progress"><div class="progress-fill" id="sc-bar"></div></div>
+  <div class="sc-pct" id="sc-pct">0%</div>
+  <button class="btn-reset" onclick="resetAll()">↺ Reset</button>
+</div>
+
+<!-- TABS -->
+<nav class="tabs">
+  <button class="tab active" onclick="switchTab('scenario',this)">📊 Spreadsheet Scenarios <span class="pill">40</span></button>
+  <button class="tab" onclick="switchTab('mcq',this)">📝 Multiple Choice <span class="pill">30</span></button>
+  <button class="tab" onclick="switchTab('tf',this)">✅ True / False <span class="pill">20</span></button>
+  <button class="tab" onclick="switchTab('id',this)">🔍 Identification <span class="pill">10</span></button>
+</nav>
+
+<div class="main">
+
+<!-- ════════════════════════════════════════════════
+     PANEL 1: SPREADSHEET SCENARIOS
+════════════════════════════════════════════════ -->
+<div class="panel active" id="panel-scenario">
+  <div class="sec-intro">
+    <div class="sec-icon">📊</div>
+    <div>
+      <div class="sec-title">Spreadsheet Scenarios</div>
+      <div class="sec-meta">40 items · 1 point each</div>
+      <div class="sec-desc">A real Excel window is shown. The formula bar displays a formula applied to the highlighted cell. Identify the correct output.</div>
+    </div>
+  </div>
+  <div class="sec-scorebar">
+    <div><div class="sec-sclbl">Section Score</div><div class="sec-sc" id="sc-scenario">0/40</div></div>
+    <div class="sec-bar"><div class="sec-barfill" id="bar-scenario" style="width:0%"></div></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="qcard" id="q1">
+    <div class="qhead"><span class="qnum">S-01</span><span class="qtext">The formula bar shows <code>=SUM(B2:B6)</code>. What value appears in the highlighted cell <b>B7</b>?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Budget.xlsx — Excel</span></div>
+        <div class="xl-toolbar">
+          <span class="xl-namebox">B7</span>
+          <span class="xl-fxbtn">fx</span>
+          <div class="xl-sep"></div>
+          <span class="xl-formulabar">=SUM(B2:B6)</span>
+        </div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Month</td><td class="r">Amount (₱)</td></tr>
+            <tr><td class="rh">2</td><td>January</td><td class="r">8,500</td></tr>
+            <tr><td class="rh">3</td><td>February</td><td class="r">9,200</td></tr>
+            <tr><td class="rh">4</td><td>March</td><td class="r">7,800</td></tr>
+            <tr><td class="rh">5</td><td>April</td><td class="r">10,400</td></tr>
+            <tr><td class="rh">6</td><td>May</td><td class="r">6,100</td></tr>
+            <tr><td class="rh">7</td><td><b>TOTAL</b></td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">What number appears in B7?</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q1" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>40,000</div>
+        <div class="opt" data-q="q1" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>42,000</div>
+        <div class="opt" data-q="q1" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>41,500</div>
+        <div class="opt" data-q="q1" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>43,000</div>
+      </div>
+      <div class="feedback" id="fb-q1"></div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="qcard" id="q2">
+    <div class="qhead"><span class="qnum">S-02</span><span class="qtext">Formula bar: <code>=AVERAGE(C2:C6)</code>. What value appears in <b>C7</b>?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Grades.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C7</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=AVERAGE(C2:C6)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+            <tr><td class="rh">1</td><td>Student</td><td>Section</td><td class="r">Score</td></tr>
+            <tr><td class="rh">2</td><td>Reyes</td><td>A</td><td class="r">85</td></tr>
+            <tr><td class="rh">3</td><td>Santos</td><td>A</td><td class="r">92</td></tr>
+            <tr><td class="rh">4</td><td>Cruz</td><td>B</td><td class="r">78</td></tr>
+            <tr><td class="rh">5</td><td>Dela Torre</td><td>B</td><td class="r">94</td></tr>
+            <tr><td class="rh">6</td><td>Mendoza</td><td>A</td><td class="r">81</td></tr>
+            <tr><td class="rh">7</td><td colspan="2"><b>Class Average</b></td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">What is the average of the 5 scores?</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q2" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>85.0</div>
+        <div class="opt" data-q="q2" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>87.0</div>
+        <div class="opt" data-q="q2" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>86.0</div>
+        <div class="opt" data-q="q2" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>88.0</div>
+      </div>
+      <div class="feedback" id="fb-q2"></div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="qcard" id="q3">
+    <div class="qhead"><span class="qnum">S-03</span><span class="qtext">Formula bar: <code>=IF(B2>=75,"PASSED","FAILED")</code>. Cell B2 = <b>68</b>. What does C2 display?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Results.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=IF(B2>=75,"PASSED","FAILED")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+            <tr><td class="rh">1</td><td>Name</td><td class="r">Grade</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td>Juan dela Cruz</td><td class="r err">68</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">68 is less than 75 — which branch runs?</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q3" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>PASSED</div>
+        <div class="opt" data-q="q3" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>FAILED</div>
+        <div class="opt" data-q="q3" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>68</div>
+        <div class="opt" data-q="q3" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>FALSE</div>
+      </div>
+      <div class="feedback" id="fb-q3"></div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="qcard" id="q4">
+    <div class="qhead"><span class="qnum">S-04</span><span class="qtext">Formula bar: <code>=VLOOKUP(E2,A2:C6,2,0)</code>. Cell E2 = <b>"Mango"</b>. What value is returned in F2?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Inventory.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">F2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=VLOOKUP(E2,A2:C6,2,0)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th><th></th><th>E</th><th>F</th></tr>
+            <tr><td class="rh">1</td><td>Product</td><td class="r">Price(₱)</td><td class="r">Stock</td><td></td><td>Search</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td>Apple</td><td class="r">25</td><td class="r">100</td><td></td><td class="hi">Mango</td><td class="active r">?</td></tr>
+            <tr><td class="rh">3</td><td>Banana</td><td class="r">12</td><td class="r">250</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">4</td><td>Cherry</td><td class="r">45</td><td class="r">80</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">5</td><td class="hi">Mango</td><td class="r hi">38</td><td class="r">150</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">6</td><td>Grape</td><td class="r">20</td><td class="r">200</td><td></td><td></td><td></td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">col_index_num = 2 → returns the 2nd column (Price)</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q4" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>150</div>
+        <div class="opt" data-q="q4" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>Mango</div>
+        <div class="opt" data-q="q4" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>38</div>
+        <div class="opt" data-q="q4" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>#N/A</div>
+      </div>
+      <div class="feedback" id="fb-q4"></div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="qcard" id="q5">
+    <div class="qhead"><span class="qnum">S-05</span><span class="qtext">Formula bar: <code>=CONCAT(A2," ",B2)</code>. What text appears in C2?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Names.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=CONCAT(A2," ",B2)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+            <tr><td class="rh">1</td><td>First Name</td><td>Last Name</td><td>Full Name</td></tr>
+            <tr><td class="rh">2</td><td class="hi">Maria</td><td class="hi">Santos</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Joins A2 + space + B2 into one string</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q5" data-c="A" onclick="answerMCQ(this)"><span class="optltr">A</span>Maria Santos</div>
+        <div class="opt" data-q="q5" data-c="A" onclick="answerMCQ(this)"><span class="optltr">B</span>MariaSantos</div>
+        <div class="opt" data-q="q5" data-c="A" onclick="answerMCQ(this)"><span class="optltr">C</span>Maria, Santos</div>
+        <div class="opt" data-q="q5" data-c="A" onclick="answerMCQ(this)"><span class="optltr">D</span>"Maria" "Santos"</div>
+      </div>
+      <div class="feedback" id="fb-q5"></div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="qcard" id="q6">
+    <div class="qhead"><span class="qnum">S-06</span><span class="qtext">Formula bar: <code>=LEFT("PHILIPPINES",4)</code>. What text is returned?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextFunctions.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=LEFT("PHILIPPINES",4)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Source Text</td><td>Extract</td></tr>
+            <tr><td class="rh">2</td><td class="hi">PHILIPPINES</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">P-H-I-L-I-P-P-I-N-E-S → extract first 4</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q6" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>PILI</div>
+        <div class="opt" data-q="q6" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>PHIL</div>
+        <div class="opt" data-q="q6" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>INES</div>
+        <div class="opt" data-q="q6" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>LIPP</div>
+      </div>
+      <div class="feedback" id="fb-q6"></div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="qcard" id="q7">
+    <div class="qhead"><span class="qnum">S-07</span><span class="qtext">Formula bar: <code>=MID("COMPROG",4,4)</code>. What is the result?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextFunctions.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=MID("COMPROG",4,4)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Function</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td>=MID("COMPROG",4,4)</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">MID(text, start_num, num_chars) → start at position 4, take 4 chars</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q7" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>COMP</div>
+        <div class="opt" data-q="q7" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>OMPR</div>
+        <div class="opt" data-q="q7" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>PROG</div>
+        <div class="opt" data-q="q7" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>MPRO</div>
+      </div>
+      <div class="feedback" id="fb-q7"></div>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="qcard" id="q8">
+    <div class="qhead"><span class="qnum">S-08</span><span class="qtext">Formula bar: <code>=ROUND(3.14159,2)</code>. What is the result?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Math.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=ROUND(3.14159,2)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Raw Value</td><td class="r">Rounded</td></tr>
+            <tr><td class="rh">2</td><td class="hi r">3.14159</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Rounded to 2 decimal places</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q8" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>3.1</div>
+        <div class="opt" data-q="q8" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>3.141</div>
+        <div class="opt" data-q="q8" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>3.14</div>
+        <div class="opt" data-q="q8" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>3.15</div>
+      </div>
+      <div class="feedback" id="fb-q8"></div>
+    </div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="qcard" id="q9">
+    <div class="qhead"><span class="qnum">S-09</span><span class="qtext">Formula bar: <code>=B2/$B$7</code> is in C2. When <b>copied down to C3</b>, what formula appears in C3's formula bar?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Percentages.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=B2/$B$7</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+            <tr><td class="rh">1</td><td>Category</td><td class="r">Amount</td><td class="r">% of Total</td></tr>
+            <tr><td class="rh">2</td><td>Food</td><td class="r">5000</td><td class="hi">← copy down</td></tr>
+            <tr><td class="rh">3</td><td>Transport</td><td class="r">2000</td><td class="active">C3 = ?</td></tr>
+            <tr><td class="rh">4</td><td>Utilities</td><td class="r">3000</td><td></td></tr>
+            <tr><td class="rh">5</td><td>Savings</td><td class="r">4000</td><td></td></tr>
+            <tr><td class="rh">6</td><td>Others</td><td class="r">1000</td><td></td></tr>
+            <tr><td class="rh">7</td><td><b>Total</b></td><td class="r hi">15000</td><td></td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Relative reference B2 adjusts; $B$7 stays fixed</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q9" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span><code>=B2/$B$7</code> (unchanged)</div>
+        <div class="opt" data-q="q9" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span><code>=B3/$B$7</code></div>
+        <div class="opt" data-q="q9" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span><code>=B3/$B$8</code></div>
+        <div class="opt" data-q="q9" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span><code>=B3/B7</code></div>
+      </div>
+      <div class="feedback" id="fb-q9"></div>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="qcard" id="q10">
+    <div class="qhead"><span class="qnum">S-10</span><span class="qtext">Formula bar: <code>=COUNTIF(B2:B9,"HR")</code>. How many cells match the criteria?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Employees.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">D2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=COUNTIF(B2:B9,"HR")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Employee</td><td>Dept</td></tr>
+            <tr><td class="rh">2</td><td>Ana</td><td class="gr">HR</td></tr>
+            <tr><td class="rh">3</td><td>Ben</td><td>IT</td></tr>
+            <tr><td class="rh">4</td><td>Cara</td><td class="gr">HR</td></tr>
+            <tr><td class="rh">5</td><td>Dan</td><td>Finance</td></tr>
+            <tr><td class="rh">6</td><td>Eva</td><td class="gr">HR</td></tr>
+            <tr><td class="rh">7</td><td>Felix</td><td>IT</td></tr>
+            <tr><td class="rh">8</td><td>Grace</td><td>Finance</td></tr>
+            <tr><td class="rh">9</td><td>Hiro</td><td class="gr">HR</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Count rows where Department = "HR"</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q10" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>2</div>
+        <div class="opt" data-q="q10" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>3</div>
+        <div class="opt" data-q="q10" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>4</div>
+        <div class="opt" data-q="q10" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>5</div>
+      </div>
+      <div class="feedback" id="fb-q10"></div>
+    </div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="qcard" id="q11">
+    <div class="qhead"><span class="qnum">S-11</span><span class="qtext">Formula bar: <code>=SUMIF(A2:A7,"North",C2:C7)</code>. What is the total?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">RegionalSales.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">F2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=SUMIF(A2:A7,"North",C2:C7)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+            <tr><td class="rh">1</td><td>Region</td><td>Product</td><td class="r">Sales (₱)</td></tr>
+            <tr><td class="rh">2</td><td class="gr">North</td><td>Laptop</td><td class="r">45,000</td></tr>
+            <tr><td class="rh">3</td><td>South</td><td>Phone</td><td class="r">30,000</td></tr>
+            <tr><td class="rh">4</td><td class="gr">North</td><td>Tablet</td><td class="r">28,000</td></tr>
+            <tr><td class="rh">5</td><td>East</td><td>Monitor</td><td class="r">15,000</td></tr>
+            <tr><td class="rh">6</td><td>South</td><td>Keyboard</td><td class="r">8,000</td></tr>
+            <tr><td class="rh">7</td><td class="gr">North</td><td>Mouse</td><td class="r">4,200</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Sum only where Region = "North"</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q11" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>73,000</div>
+        <div class="opt" data-q="q11" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>77,200</div>
+        <div class="opt" data-q="q11" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>81,000</div>
+        <div class="opt" data-q="q11" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>130,200</div>
+      </div>
+      <div class="feedback" id="fb-q11"></div>
+    </div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="qcard" id="q12">
+    <div class="qhead"><span class="qnum">S-12</span><span class="qtext">Formula bar: <code>=IF(AND(B2>=75,C2>=75),"PASSED","FAILED")</code>. B2=80, C2=70. What does D2 show?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">PassFail.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">D2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=IF(AND(B2>=75,C2>=75),"PASSED","FAILED")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="rh">1</td><td>Name</td><td class="r">Written</td><td class="r">Practical</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td>Reyes</td><td class="r gr">80</td><td class="r err">70</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">AND() = both must be TRUE. Is 70 ≥ 75?</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q12" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>PASSED</div>
+        <div class="opt" data-q="q12" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>FAILED</div>
+        <div class="opt" data-q="q12" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>TRUE</div>
+        <div class="opt" data-q="q12" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>#VALUE!</div>
+      </div>
+      <div class="feedback" id="fb-q12"></div>
+    </div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="qcard" id="q13">
+    <div class="qhead"><span class="qnum">S-13</span><span class="qtext">Formula bar: <code>=IF(A2>=90,"A",IF(A2>=80,"B",IF(A2>=70,"C","F")))</code>. A2 = <b>83</b>. What letter grade appears?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Grading.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=IF(A2>=90,"A",IF(A2>=80,"B",IF(A2>=70,"C","F")))</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td class="r">Score</td><td>Grade</td></tr>
+            <tr><td class="rh">2</td><td class="r hi">83</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">83 fails the ≥90 check, passes the ≥80 check</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q13" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>A</div>
+        <div class="opt" data-q="q13" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>B</div>
+        <div class="opt" data-q="q13" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>C</div>
+        <div class="opt" data-q="q13" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>F</div>
+      </div>
+      <div class="feedback" id="fb-q13"></div>
+    </div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="qcard" id="q14">
+    <div class="qhead"><span class="qnum">S-14</span><span class="qtext">Formula bar: <code>=B2/C2</code>. Cell C2 = <b>0</b>. What error code appears in D2?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Errors.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">D2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=B2/C2</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="rh">1</td><td>Label</td><td class="r">Numerator</td><td class="r">Divisor</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td>Calc</td><td class="r">500</td><td class="r err">0</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Dividing any number by zero causes this error</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q14" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>#VALUE!</div>
+        <div class="opt" data-q="q14" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>#DIV/0!</div>
+        <div class="opt" data-q="q14" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>#REF!</div>
+        <div class="opt" data-q="q14" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>#NULL!</div>
+      </div>
+      <div class="feedback" id="fb-q14"></div>
+    </div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="qcard" id="q15">
+    <div class="qhead"><span class="qnum">S-15</span><span class="qtext">Formula bar: <code>=IFERROR(VLOOKUP(D2,A2:B5,2,0),"Not Found")</code>. D2 = <b>"Jackfruit"</b> (not in table). What appears?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Lookup.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">E2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=IFERROR(VLOOKUP(D2,A2:B5,2,0),"Not Found")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th></th><th>D</th><th>E</th></tr>
+            <tr><td class="rh">1</td><td>Fruit</td><td class="r">Price</td><td></td><td>Search</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td>Mango</td><td class="r">38</td><td></td><td class="err">Jackfruit</td><td class="active">?</td></tr>
+            <tr><td class="rh">3</td><td>Apple</td><td class="r">25</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">4</td><td>Banana</td><td class="r">12</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">5</td><td>Grape</td><td class="r">20</td><td></td><td></td><td></td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">VLOOKUP returns #N/A → IFERROR catches it</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q15" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>#N/A</div>
+        <div class="opt" data-q="q15" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>0</div>
+        <div class="opt" data-q="q15" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>Not Found</div>
+        <div class="opt" data-q="q15" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>FALSE</div>
+      </div>
+      <div class="feedback" id="fb-q15"></div>
+    </div>
+  </div>
+
+  <!-- Q16 -->
+  <div class="qcard" id="q16">
+    <div class="qhead"><span class="qnum">S-16</span><span class="qtext">Formula bar: <code>=MOD(29,6)</code>. What is the remainder?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Math.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=MOD(29,6)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Formula</td><td class="r">Result</td></tr>
+            <tr><td class="rh">2</td><td>=MOD(29,6)</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">29 ÷ 6 = 4 remainder ?   (4 × 6 = 24)</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q16" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>4</div>
+        <div class="opt" data-q="q16" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>1</div>
+        <div class="opt" data-q="q16" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>5</div>
+        <div class="opt" data-q="q16" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>0</div>
+      </div>
+      <div class="feedback" id="fb-q16"></div>
+    </div>
+  </div>
+
+  <!-- Q17 -->
+  <div class="qcard" id="q17">
+    <div class="qhead"><span class="qnum">S-17</span><span class="qtext">Formula bar: <code>=MAX(B2:B7)</code>. What is the highest value?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Scores.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B9</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=MAX(B2:B7)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Student</td><td class="r">Score</td></tr>
+            <tr><td class="rh">2</td><td>Student A</td><td class="r">74</td></tr>
+            <tr><td class="rh">3</td><td>Student B</td><td class="r">91</td></tr>
+            <tr><td class="rh">4</td><td>Student C</td><td class="r">58</td></tr>
+            <tr><td class="rh">5</td><td>Student D</td><td class="r hi">97</td></tr>
+            <tr><td class="rh">6</td><td>Student E</td><td class="r">85</td></tr>
+            <tr><td class="rh">7</td><td>Student F</td><td class="r">63</td></tr>
+            <tr><td class="rh">9</td><td><b>Highest</b></td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Identify the maximum value in the range</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q17" data-c="D" onclick="answerMCQ(this)"><span class="optltr">A</span>91</div>
+        <div class="opt" data-q="q17" data-c="D" onclick="answerMCQ(this)"><span class="optltr">B</span>85</div>
+        <div class="opt" data-q="q17" data-c="D" onclick="answerMCQ(this)"><span class="optltr">C</span>93</div>
+        <div class="opt" data-q="q17" data-c="D" onclick="answerMCQ(this)"><span class="optltr">D</span>97</div>
+      </div>
+      <div class="feedback" id="fb-q17"></div>
+    </div>
+  </div>
+
+  <!-- Q18 -->
+  <div class="qcard" id="q18">
+    <div class="qhead"><span class="qnum">S-18</span><span class="qtext">Formula bar: <code>=LEN("BES 103")</code>. How many characters does the function count?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextAnalysis.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=LEN("BES 103")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Text</td><td class="r">Length</td></tr>
+            <tr><td class="rh">2</td><td class="hi">BES 103</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">LEN counts every character — including spaces!</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q18" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>6</div>
+        <div class="opt" data-q="q18" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>7</div>
+        <div class="opt" data-q="q18" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>8</div>
+        <div class="opt" data-q="q18" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>5</div>
+      </div>
+      <div class="feedback" id="fb-q18"></div>
+    </div>
+  </div>
+
+  <!-- Q19 -->
+  <div class="qcard" id="q19">
+    <div class="qhead"><span class="qnum">S-19</span><span class="qtext">Formula bar: <code>=UPPER(A2)</code>. A2 = <b>"university of southeastern philippines"</b>. What does B2 display?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextCase.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=UPPER(A2)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Input</td><td>Output</td></tr>
+            <tr><td class="rh">2</td><td class="hi">university of southeastern philippines</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">UPPER converts every letter to capital</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q19" data-c="A" onclick="answerMCQ(this)"><span class="optltr">A</span>UNIVERSITY OF SOUTHEASTERN PHILIPPINES</div>
+        <div class="opt" data-q="q19" data-c="A" onclick="answerMCQ(this)"><span class="optltr">B</span>University Of Southeastern Philippines</div>
+        <div class="opt" data-q="q19" data-c="A" onclick="answerMCQ(this)"><span class="optltr">C</span>university of southeastern philippines</div>
+        <div class="opt" data-q="q19" data-c="A" onclick="answerMCQ(this)"><span class="optltr">D</span>UNIVERSITY of southeastern PHILIPPINES</div>
+      </div>
+      <div class="feedback" id="fb-q19"></div>
+    </div>
+  </div>
+
+  <!-- Q20 -->
+  <div class="qcard" id="q20">
+    <div class="qhead"><span class="qnum">S-20</span><span class="qtext">Formula bar: <code>=PROPER("juan dela cruz")</code>. What does the cell show?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextCase.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=PROPER("juan dela cruz")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Input</td><td>Output</td></tr>
+            <tr><td class="rh">2</td><td class="hi">juan dela cruz</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">PROPER capitalizes the first letter of EACH word</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q20" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>JUAN DELA CRUZ</div>
+        <div class="opt" data-q="q20" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>Juan Dela Cruz</div>
+        <div class="opt" data-q="q20" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>Juan dela cruz</div>
+        <div class="opt" data-q="q20" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>juan dela cruz</div>
+      </div>
+      <div class="feedback" id="fb-q20"></div>
+    </div>
+  </div>
+
+  <div class="divider">── Continued: Scenarios 21–40 ──</div>
+
+  <!-- Q21 -->
+  <div class="qcard" id="q21">
+    <div class="qhead"><span class="qnum">S-21</span><span class="qtext">Formula bar: <code>=INDEX(B2:D4,2,3)</code>. What value is returned?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">IndexMatch.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">F2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=INDEX(B2:D4,2,3)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="rh">1</td><td></td><td>Q1</td><td>Q2</td><td>Q3</td></tr>
+            <tr><td class="rh">2</td><td>North</td><td class="r">100</td><td class="r">150</td><td class="r">200</td></tr>
+            <tr><td class="rh">3</td><td>South</td><td class="r">80</td><td class="r">120</td><td class="r hi">175</td></tr>
+            <tr><td class="rh">4</td><td>East</td><td class="r">60</td><td class="r">90</td><td class="r">130</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">INDEX(array, row=2, col=3) → 2nd row, 3rd column of B2:D4</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q21" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>200</div>
+        <div class="opt" data-q="q21" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>120</div>
+        <div class="opt" data-q="q21" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>175</div>
+        <div class="opt" data-q="q21" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>90</div>
+      </div>
+      <div class="feedback" id="fb-q21"></div>
+    </div>
+  </div>
+
+  <!-- Q22 -->
+  <div class="qcard" id="q22">
+    <div class="qhead"><span class="qnum">S-22</span><span class="qtext">Formula bar: <code>=MATCH("Cherry",A2:A6,0)</code>. What position number is returned?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Match.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=MATCH("Cherry",A2:A6,0)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th></tr>
+            <tr><td class="rh">1</td><td>Fruit</td></tr>
+            <tr><td class="rh">2</td><td>Apple</td></tr>
+            <tr><td class="rh">3</td><td>Banana</td></tr>
+            <tr><td class="rh">4</td><td class="hi">Cherry</td></tr>
+            <tr><td class="rh">5</td><td>Durian</td></tr>
+            <tr><td class="rh">6</td><td>Elderberry</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">MATCH returns relative position (1 = first item in range)</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q22" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>4</div>
+        <div class="opt" data-q="q22" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>2</div>
+        <div class="opt" data-q="q22" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>3</div>
+        <div class="opt" data-q="q22" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>1</div>
+      </div>
+      <div class="feedback" id="fb-q22"></div>
+    </div>
+  </div>
+
+  <!-- Q23 -->
+  <div class="qcard" id="q23">
+    <div class="qhead"><span class="qnum">S-23</span><span class="qtext">Formula bar: <code>=ROUNDUP(4.01,0)</code>. What does the cell display?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Rounding.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=ROUNDUP(4.01,0)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Function</td><td class="r">Result</td></tr>
+            <tr><td class="rh">2</td><td>=ROUNDUP(4.01,0)</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">ROUNDUP always rounds AWAY from zero, regardless of decimal</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q23" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>4</div>
+        <div class="opt" data-q="q23" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>5</div>
+        <div class="opt" data-q="q23" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>4.01</div>
+        <div class="opt" data-q="q23" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>4.1</div>
+      </div>
+      <div class="feedback" id="fb-q23"></div>
+    </div>
+  </div>
+
+  <!-- Q24 -->
+  <div class="qcard" id="q24">
+    <div class="qhead"><span class="qnum">S-24</span><span class="qtext">Formula bar: <code>=COUNTA(A2:A7)</code>. How many non-empty cells are counted?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">CountFns.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=COUNTA(A2:A7)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">2</td><td class="gr">Excel</td><td>Text</td></tr>
+            <tr><td class="rh">3</td><td class="gr r">42</td><td>Number</td></tr>
+            <tr><td class="rh">4</td><td style="color:#bbb;font-style:italic">(blank)</td><td>Empty</td></tr>
+            <tr><td class="rh">5</td><td class="gr">TRUE</td><td>Boolean</td></tr>
+            <tr><td class="rh">6</td><td style="color:#bbb;font-style:italic">(blank)</td><td>Empty</td></tr>
+            <tr><td class="rh">7</td><td class="gr r">99</td><td>Number</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">COUNTA counts text, numbers, AND booleans — anything non-empty</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q24" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>2</div>
+        <div class="opt" data-q="q24" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>3</div>
+        <div class="opt" data-q="q24" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>4</div>
+        <div class="opt" data-q="q24" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>6</div>
+      </div>
+      <div class="feedback" id="fb-q24"></div>
+    </div>
+  </div>
+
+  <!-- Q25 -->
+  <div class="qcard" id="q25">
+    <div class="qhead"><span class="qnum">S-25</span><span class="qtext">Formula bar: <code>=COUNT(A2:A7)</code> — same data as S-24. What value is returned now?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">CountFns.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">D2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=COUNT(A2:A7)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">2</td><td>Excel</td><td>← text, NOT counted by COUNT</td></tr>
+            <tr><td class="rh">3</td><td class="gr r">42</td><td>← number ✓</td></tr>
+            <tr><td class="rh">4</td><td style="color:#bbb;font-style:italic">(blank)</td><td>← empty, not counted</td></tr>
+            <tr><td class="rh">5</td><td>TRUE</td><td>← boolean, NOT counted by COUNT</td></tr>
+            <tr><td class="rh">6</td><td style="color:#bbb;font-style:italic">(blank)</td><td>← empty, not counted</td></tr>
+            <tr><td class="rh">7</td><td class="gr r">99</td><td>← number ✓</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">COUNT counts ONLY numeric values — not text, booleans, or blanks</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q25" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>4</div>
+        <div class="opt" data-q="q25" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>2</div>
+        <div class="opt" data-q="q25" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>3</div>
+        <div class="opt" data-q="q25" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>0</div>
+      </div>
+      <div class="feedback" id="fb-q25"></div>
+    </div>
+  </div>
+
+  <!-- Q26 -->
+  <div class="qcard" id="q26">
+    <div class="qhead"><span class="qnum">S-26</span><span class="qtext">Formula bar: <code>=LARGE(B2:B6,2)</code>. What is the <b>2nd largest</b> value?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Rankings.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">D2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=LARGE(B2:B6,2)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Name</td><td class="r">Score</td></tr>
+            <tr><td class="rh">2</td><td>Anna</td><td class="r">87</td></tr>
+            <tr><td class="rh">3</td><td>Ben</td><td class="r hi">95</td></tr>
+            <tr><td class="rh">4</td><td>Cora</td><td class="r hi">91</td></tr>
+            <tr><td class="rh">5</td><td>Dan</td><td class="r">78</td></tr>
+            <tr><td class="rh">6</td><td>Eva</td><td class="r">83</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Sorted descending: 95, 91, 87, 83, 78 → k=2 picks 2nd</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q26" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>95</div>
+        <div class="opt" data-q="q26" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>91</div>
+        <div class="opt" data-q="q26" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>87</div>
+        <div class="opt" data-q="q26" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>83</div>
+      </div>
+      <div class="feedback" id="fb-q26"></div>
+    </div>
+  </div>
+
+  <!-- Q27 -->
+  <div class="qcard" id="q27">
+    <div class="qhead"><span class="qnum">S-27</span><span class="qtext">Formula bar: <code>=ABS(B2)</code>. Cell B2 = <b>-258.75</b>. What is the result?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Math.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=ABS(B2)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+            <tr><td class="rh">1</td><td>Label</td><td class="r">Value</td><td class="r">Absolute</td></tr>
+            <tr><td class="rh">2</td><td>Net Loss</td><td class="r err">-258.75</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">ABS returns the non-negative magnitude</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q27" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>-258.75</div>
+        <div class="opt" data-q="q27" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>258.75</div>
+        <div class="opt" data-q="q27" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>258</div>
+        <div class="opt" data-q="q27" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>259</div>
+      </div>
+      <div class="feedback" id="fb-q27"></div>
+    </div>
+  </div>
+
+  <!-- Q28 -->
+  <div class="qcard" id="q28">
+    <div class="qhead"><span class="qnum">S-28</span><span class="qtext">Formula bar: <code>=POWER(2,10)</code>. What value is returned?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Math.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=POWER(2,10)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Expression</td><td class="r">Result</td></tr>
+            <tr><td class="rh">2</td><td>=POWER(2,10) → 2¹⁰</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">2¹⁰ = 2×2×2×2×2×2×2×2×2×2</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q28" data-c="D" onclick="answerMCQ(this)"><span class="optltr">A</span>512</div>
+        <div class="opt" data-q="q28" data-c="D" onclick="answerMCQ(this)"><span class="optltr">B</span>256</div>
+        <div class="opt" data-q="q28" data-c="D" onclick="answerMCQ(this)"><span class="optltr">C</span>20</div>
+        <div class="opt" data-q="q28" data-c="D" onclick="answerMCQ(this)"><span class="optltr">D</span>1024</div>
+      </div>
+      <div class="feedback" id="fb-q28"></div>
+    </div>
+  </div>
+
+  <!-- Q29 -->
+  <div class="qcard" id="q29">
+    <div class="qhead"><span class="qnum">S-29</span><span class="qtext">A column was deleted. Cell B2 has <code>=A2+C2</code> where C2 was in that deleted column. What error appears in B2?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Errors.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=A2+#REF!</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Value 1</td><td>Sum</td></tr>
+            <tr><td class="rh">2</td><td class="r">500</td><td class="active err">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">The formula references a cell that no longer exists</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q29" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>#DIV/0!</div>
+        <div class="opt" data-q="q29" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>#REF!</div>
+        <div class="opt" data-q="q29" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>#VALUE!</div>
+        <div class="opt" data-q="q29" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>#N/A</div>
+      </div>
+      <div class="feedback" id="fb-q29"></div>
+    </div>
+  </div>
+
+  <!-- Q30 -->
+  <div class="qcard" id="q30">
+    <div class="qhead"><span class="qnum">S-30</span><span class="qtext">Formula bar: <code>=TRIM("  Excel   2019  ")</code>. What does the function return?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">CleanData.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=TRIM("  Excel   2019  ")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Messy Text</td><td>Cleaned</td></tr>
+            <tr><td class="rh">2</td><td class="hi err">"  Excel   2019  " (extra spaces)</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">TRIM removes leading/trailing spaces; reduces interior multiples to one</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q30" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>"Excel2019" (no space)</div>
+        <div class="opt" data-q="q30" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>"Excel 2019" (single space, clean)</div>
+        <div class="opt" data-q="q30" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>"  Excel   2019  " (unchanged)</div>
+        <div class="opt" data-q="q30" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>#VALUE!</div>
+      </div>
+      <div class="feedback" id="fb-q30"></div>
+    </div>
+  </div>
+
+  <!-- Q31 -->
+  <div class="qcard" id="q31">
+    <div class="qhead"><span class="qnum">S-31</span><span class="qtext">Formula bar: <code>=SUMIFS(D2:D7,A2:A7,"North",C2:C7,"Laptop")</code>. What is the result?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">SalesData.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">G2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=SUMIFS(D2:D7,A2:A7,"North",C2:C7,"Laptop")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="rh">1</td><td>Region</td><td>Rep</td><td>Product</td><td class="r">Sales</td></tr>
+            <tr><td class="rh">2</td><td class="gr">North</td><td>Ana</td><td class="gr">Laptop</td><td class="r">45,000</td></tr>
+            <tr><td class="rh">3</td><td>South</td><td>Ben</td><td>Laptop</td><td class="r">30,000</td></tr>
+            <tr><td class="rh">4</td><td class="gr">North</td><td>Cara</td><td>Phone</td><td class="r">22,000</td></tr>
+            <tr><td class="rh">5</td><td class="gr">North</td><td>Dan</td><td class="gr">Laptop</td><td class="r">38,000</td></tr>
+            <tr><td class="rh">6</td><td>East</td><td>Eva</td><td>Laptop</td><td class="r">18,000</td></tr>
+            <tr><td class="rh">7</td><td>South</td><td>Felix</td><td>Phone</td><td class="r">15,000</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Sum where Region="North" AND Product="Laptop" (both conditions)</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q31" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>75,000</div>
+        <div class="opt" data-q="q31" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>105,000</div>
+        <div class="opt" data-q="q31" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>83,000</div>
+        <div class="opt" data-q="q31" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>45,000</div>
+      </div>
+      <div class="feedback" id="fb-q31"></div>
+    </div>
+  </div>
+
+  <!-- Q32 -->
+  <div class="qcard" id="q32">
+    <div class="qhead"><span class="qnum">S-32</span><span class="qtext">Formula bar shows a misspelled function: <code>=SUMM(A2:A5)</code>. What error appears?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Errors.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=SUMM(A2:A5)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td class="r">Values</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td class="r">100</td><td class="active err">?</td></tr>
+            <tr><td class="rh">3</td><td class="r">200</td><td></td></tr>
+            <tr><td class="rh">4</td><td class="r">300</td><td></td></tr>
+            <tr><td class="rh">5</td><td class="r">400</td><td></td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Excel does not recognize "SUMM" as a function name</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q32" data-c="D" onclick="answerMCQ(this)"><span class="optltr">A</span>#VALUE!</div>
+        <div class="opt" data-q="q32" data-c="D" onclick="answerMCQ(this)"><span class="optltr">B</span>#REF!</div>
+        <div class="opt" data-q="q32" data-c="D" onclick="answerMCQ(this)"><span class="optltr">C</span>#DIV/0!</div>
+        <div class="opt" data-q="q32" data-c="D" onclick="answerMCQ(this)"><span class="optltr">D</span>#NAME?</div>
+      </div>
+      <div class="feedback" id="fb-q32"></div>
+    </div>
+  </div>
+
+  <!-- Q33 -->
+  <div class="qcard" id="q33">
+    <div class="qhead"><span class="qnum">S-33</span><span class="qtext">Formula bar: <code>=TEXT(B2,"#,##0.00")</code>. B2 = <b>12500</b>. What text string does C2 display?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextFormat.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">C2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=TEXT(B2,"#,##0.00")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th></tr>
+            <tr><td class="rh">1</td><td>Label</td><td class="r">Number</td><td>Formatted Text</td></tr>
+            <tr><td class="rh">2</td><td>Amount</td><td class="r hi">12500</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Format "#,##0.00" → thousands separator + 2 decimal places</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q33" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>12500</div>
+        <div class="opt" data-q="q33" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>₱12,500</div>
+        <div class="opt" data-q="q33" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>12,500.00</div>
+        <div class="opt" data-q="q33" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>12.500,00</div>
+      </div>
+      <div class="feedback" id="fb-q33"></div>
+    </div>
+  </div>
+
+  <!-- Q34 -->
+  <div class="qcard" id="q34">
+    <div class="qhead"><span class="qnum">S-34</span><span class="qtext">Formula bar: <code>=IF(OR(B2>100,C2>100),"HIGH","LOW")</code>. B2=90, C2=110. What does D2 show?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Logic.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">D2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=IF(OR(B2>100,C2>100),"HIGH","LOW")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            <tr><td class="rh">1</td><td>Item</td><td class="r">Val1</td><td class="r">Val2</td><td>Flag</td></tr>
+            <tr><td class="rh">2</td><td>X</td><td class="r">90</td><td class="r hi">110</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">OR() = TRUE if at least ONE condition is true</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q34" data-c="A" onclick="answerMCQ(this)"><span class="optltr">A</span>HIGH</div>
+        <div class="opt" data-q="q34" data-c="A" onclick="answerMCQ(this)"><span class="optltr">B</span>LOW</div>
+        <div class="opt" data-q="q34" data-c="A" onclick="answerMCQ(this)"><span class="optltr">C</span>TRUE</div>
+        <div class="opt" data-q="q34" data-c="A" onclick="answerMCQ(this)"><span class="optltr">D</span>#VALUE!</div>
+      </div>
+      <div class="feedback" id="fb-q34"></div>
+    </div>
+  </div>
+
+  <!-- Q35 -->
+  <div class="qcard" id="q35">
+    <div class="qhead"><span class="qnum">S-35</span><span class="qtext">Formula bar: <code>=SUBTOTAL(9,B2:B7)</code>. Function_num 9 = SUM. All rows visible. What is the result?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">FilteredData.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B9</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=SUBTOTAL(9,B2:B7)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Item</td><td class="r">Amount</td></tr>
+            <tr><td class="rh">2</td><td>A</td><td class="r">1,200</td></tr>
+            <tr><td class="rh">3</td><td>B</td><td class="r">800</td></tr>
+            <tr><td class="rh">4</td><td>C</td><td class="r">3,500</td></tr>
+            <tr><td class="rh">5</td><td>D</td><td class="r">950</td></tr>
+            <tr><td class="rh">6</td><td>E</td><td class="r">1,100</td></tr>
+            <tr><td class="rh">7</td><td>F</td><td class="r">2,200</td></tr>
+            <tr><td class="rh">9</td><td>SUBTOTAL</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Sum all 6 values: 1200+800+3500+950+1100+2200</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q35" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>8,950</div>
+        <div class="opt" data-q="q35" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>9,750</div>
+        <div class="opt" data-q="q35" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>9,050</div>
+        <div class="opt" data-q="q35" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>10,200</div>
+      </div>
+      <div class="feedback" id="fb-q35"></div>
+    </div>
+  </div>
+
+  <!-- Q36 -->
+  <div class="qcard" id="q36">
+    <div class="qhead"><span class="qnum">S-36</span><span class="qtext">Formula bar: <code>=RIGHT("BES103COMPROG",7)</code>. What text is extracted?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextFns.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=RIGHT("BES103COMPROG",7)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Source</td><td>Extract</td></tr>
+            <tr><td class="rh">2</td><td class="hi">BES103COMPROG</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">String length = 13 chars. Extract last 7 from the right.</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q36" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>BES103C</div>
+        <div class="opt" data-q="q36" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>COMPROG</div>
+        <div class="opt" data-q="q36" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>103COMP</div>
+        <div class="opt" data-q="q36" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>OMPROG</div>
+      </div>
+      <div class="feedback" id="fb-q36"></div>
+    </div>
+  </div>
+
+  <!-- Q37 -->
+  <div class="qcard" id="q37">
+    <div class="qhead"><span class="qnum">S-37</span><span class="qtext">Formula bar: <code>=LOWER("USEP COLLEGE OF ENGINEERING")</code>. What does the cell show?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">TextCase.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=LOWER("USEP COLLEGE OF ENGINEERING")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Input</td><td>Output</td></tr>
+            <tr><td class="rh">2</td><td class="hi">USEP COLLEGE OF ENGINEERING</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">LOWER converts ALL letters to lowercase</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q37" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>Usep College Of Engineering</div>
+        <div class="opt" data-q="q37" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>usep college of engineering</div>
+        <div class="opt" data-q="q37" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>USEP COLLEGE OF ENGINEERING</div>
+        <div class="opt" data-q="q37" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>Usep college of engineering</div>
+      </div>
+      <div class="feedback" id="fb-q37"></div>
+    </div>
+  </div>
+
+  <!-- Q38 -->
+  <div class="qcard" id="q38">
+    <div class="qhead"><span class="qnum">S-38</span><span class="qtext">Formula bar: <code>=VLOOKUP(E2,A2:C6,3,0)</code>. E2 = <b>"Banana"</b>. col_index = <b>3</b>. What is returned?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Inventory.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">F2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=VLOOKUP(E2,A2:C6,3,0)</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th><th>C</th><th></th><th>E</th><th>F</th></tr>
+            <tr><td class="rh">1</td><td>Product</td><td class="r">Price</td><td class="r">Stock</td><td></td><td>Lookup</td><td>Result</td></tr>
+            <tr><td class="rh">2</td><td>Apple</td><td class="r">25</td><td class="r">100</td><td></td><td class="hi">Banana</td><td class="active r">?</td></tr>
+            <tr><td class="rh">3</td><td class="hi">Banana</td><td class="r">12</td><td class="r hi">250</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">4</td><td>Cherry</td><td class="r">45</td><td class="r">80</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">5</td><td>Mango</td><td class="r">38</td><td class="r">150</td><td></td><td></td><td></td></tr>
+            <tr><td class="rh">6</td><td>Grape</td><td class="r">20</td><td class="r">200</td><td></td><td></td><td></td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">col_index=3 → returns 3rd column of table array (Stock)</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q38" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>12</div>
+        <div class="opt" data-q="q38" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>Banana</div>
+        <div class="opt" data-q="q38" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>250</div>
+        <div class="opt" data-q="q38" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>#N/A</div>
+      </div>
+      <div class="feedback" id="fb-q38"></div>
+    </div>
+  </div>
+
+  <!-- Q39 -->
+  <div class="qcard" id="q39">
+    <div class="qhead"><span class="qnum">S-39</span><span class="qtext">Formula bar: <code>=(5+3)*2-10/2</code>. What does the cell display?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Operators.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">A2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=(5+3)*2-10/2</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th></tr>
+            <tr><td class="rh">1</td><td>Formula Result</td></tr>
+            <tr><td class="rh">2</td><td class="active r">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">Apply PEMDAS: Parentheses → Multiply/Divide → Add/Subtract</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q39" data-c="C" onclick="answerMCQ(this)"><span class="optltr">A</span>6</div>
+        <div class="opt" data-q="q39" data-c="C" onclick="answerMCQ(this)"><span class="optltr">B</span>16</div>
+        <div class="opt" data-q="q39" data-c="C" onclick="answerMCQ(this)"><span class="optltr">C</span>11</div>
+        <div class="opt" data-q="q39" data-c="C" onclick="answerMCQ(this)"><span class="optltr">D</span>13</div>
+      </div>
+      <div class="feedback" id="fb-q39"></div>
+    </div>
+  </div>
+
+  <!-- Q40 -->
+  <div class="qcard" id="q40">
+    <div class="qhead"><span class="qnum">S-40</span><span class="qtext">Formula bar: <code>=CHOOSE(2,"Mon","Tue","Wed","Thu")</code>. What does the cell display?</span></div>
+    <div class="qbody">
+      <div class="xl-mock">
+        <div class="xl-titlebar"><div class="xl-dot"></div><span class="xl-fname">Choose.xlsx — Excel</span></div>
+        <div class="xl-toolbar"><span class="xl-namebox">B2</span><span class="xl-fxbtn">fx</span><div class="xl-sep"></div><span class="xl-formulabar">=CHOOSE(2,"Mon","Tue","Wed","Thu")</span></div>
+        <div class="xl-grid-wrap">
+          <table class="xl"><tr><th></th><th>A</th><th>B</th></tr>
+            <tr><td class="rh">1</td><td>Index</td><td>Day</td></tr>
+            <tr><td class="rh">2</td><td class="r">2</td><td class="active">?</td></tr>
+          </table>
+        </div>
+        <div class="xl-caption">CHOOSE(index, val1, val2, ...) — index 2 returns the 2nd value</div>
+      </div>
+      <div class="opts">
+        <div class="opt" data-q="q40" data-c="B" onclick="answerMCQ(this)"><span class="optltr">A</span>Mon</div>
+        <div class="opt" data-q="q40" data-c="B" onclick="answerMCQ(this)"><span class="optltr">B</span>Tue</div>
+        <div class="opt" data-q="q40" data-c="B" onclick="answerMCQ(this)"><span class="optltr">C</span>Wed</div>
+        <div class="opt" data-q="q40" data-c="B" onclick="answerMCQ(this)"><span class="optltr">D</span>Thu</div>
+      </div>
+      <div class="feedback" id="fb-q40"></div>
+    </div>
+  </div>
+
+</div><!-- end scenario panel -->
+
+
+<!-- ════════════ MCQ PANEL ════════════ -->
+<div class="panel" id="panel-mcq">
+  <div class="sec-intro">
+    <div class="sec-icon">📝</div>
+    <div>
+      <div class="sec-title">Multiple Choice</div>
+      <div class="sec-meta">30 items · 1 point each</div>
+      <div class="sec-desc">Formula syntax, function behavior, edge cases, keyboard shortcuts, and Excel concepts.</div>
+    </div>
+  </div>
+  <div class="sec-scorebar">
+    <div><div class="sec-sclbl">Section Score</div><div class="sec-sc" id="sc-mcq">0/30</div></div>
+    <div class="sec-bar"><div class="sec-barfill" id="bar-mcq" style="width:0%"></div></div>
+  </div>
+  <div id="mcq-container"></div>
+</div>
+
+<!-- ════════════ T/F PANEL ════════════ -->
+<div class="panel" id="panel-tf">
+  <div class="sec-intro">
+    <div class="sec-icon">✅</div>
+    <div>
+      <div class="sec-title">True or False</div>
+      <div class="sec-meta">20 items · 1 point each</div>
+      <div class="sec-desc">Excel-specific behaviors, edge cases, and common misconceptions. Think carefully!</div>
+    </div>
+  </div>
+  <div class="sec-scorebar">
+    <div><div class="sec-sclbl">Section Score</div><div class="sec-sc" id="sc-tf">0/20</div></div>
+    <div class="sec-bar"><div class="sec-barfill" id="bar-tf" style="width:0%"></div></div>
+  </div>
+  <div id="tf-container"></div>
+</div>
+
+<!-- ════════════ ID PANEL ════════════ -->
+<div class="panel" id="panel-id">
+  <div class="sec-intro">
+    <div class="sec-icon">🔍</div>
+    <div>
+      <div class="sec-title">Identification</div>
+      <div class="sec-meta">10 items · 1 point each</div>
+      <div class="sec-desc">Type the exact function name, error code, or Excel term. Press Enter or click Check.</div>
+    </div>
+  </div>
+  <div class="sec-scorebar">
+    <div><div class="sec-sclbl">Section Score</div><div class="sec-sc" id="sc-id">0/10</div></div>
+    <div class="sec-bar"><div class="sec-barfill" id="bar-id" style="width:0%"></div></div>
+  </div>
+  <div id="id-container"></div>
+</div>
+
+</div><!-- end main -->
+<div class="footer">BES 103 · COMPROG · Excel Hardcore 100 · University of Southeastern Philippines · College of Engineering</div>
+
+<script>
+// ═══════════════════ STATE ═══════════════════
+let scores = { scenario: 0, mcq: 0, tf: 0, id: 0 };
+let totals  = { scenario: 40, mcq: 30, tf: 20, id: 10 };
+let answered = {};
+
+// ═══════════════════ ANSWERS + FEEDBACK (Scenarios) ═══════════════════
+const SA = {
+  q1:'B', q2:'C', q3:'B', q4:'C', q5:'A', q6:'B', q7:'C', q8:'C', q9:'B', q10:'C',
+  q11:'B', q12:'B', q13:'B', q14:'B', q15:'C', q16:'C', q17:'D', q18:'B', q19:'A', q20:'B',
+  q21:'C', q22:'C', q23:'B', q24:'C', q25:'B', q26:'B', q27:'B', q28:'D', q29:'B', q30:'B',
+  q31:'C', q32:'D', q33:'C', q34:'A', q35:'B', q36:'B', q37:'B', q38:'C', q39:'C', q40:'B'
+};
+const SF = {
+  q1:'8,500+9,200+7,800+10,400+6,100 = 42,000. SUM adds all values in the specified range.',
+  q2:'(85+92+78+94+81) ÷ 5 = 430 ÷ 5 = 86. AVERAGE = sum divided by count.',
+  q3:'68 < 75 → condition is FALSE → the "value_if_false" branch runs → "FAILED".',
+  q4:'VLOOKUP finds "Mango" in row 5 of column A, then returns column 2 (Price = 38).',
+  q5:'CONCAT joins A2 + " " + B2 = "Maria" + " " + "Santos" = "Maria Santos".',
+  q6:'LEFT extracts from the LEFT side. First 4 characters of "PHILIPPINES" = P-H-I-L = "PHIL".',
+  q7:'MID("COMPROG", 4, 4): starts at position 4 (P), takes 4 chars → P-R-O-G = "PROG".',
+  q8:'ROUND(3.14159, 2): look at the 3rd decimal (1 < 5) → round down → 3.14.',
+  q9:'Relative reference B2 → shifts to B3. Absolute $B$7 stays fixed. Result: =B3/$B$7.',
+  q10:'HR appears in rows 2 (Ana), 4 (Cara), 6 (Eva), 9 (Hiro) = 4 cells.',
+  q11:'North rows: 45,000 + 28,000 + 4,200 = 77,200. SUMIF sums only matching rows.',
+  q12:'AND(80>=75, 70>=75) = AND(TRUE, FALSE) = FALSE → "FAILED". Both must be TRUE.',
+  q13:'83 is NOT ≥90 → skip. 83 IS ≥80 → second IF returns "B".',
+  q14:'Division by zero → #DIV/0! This is one of the most common Excel errors.',
+  q15:'VLOOKUP fails on "Jackfruit" → returns #N/A → IFERROR catches it → shows "Not Found".',
+  q16:'29 ÷ 6 = 4 with remainder 5 (since 4×6=24, 29-24=5). MOD(29,6) = 5.',
+  q17:'Values: 74,91,58,97,85,63. The maximum is 97.',
+  q18:'"BES 103" has 7 characters: B-E-S-[space]-1-0-3. LEN counts the space too!',
+  q19:'UPPER converts every character to uppercase. No exceptions for any letter.',
+  q20:'PROPER capitalizes the FIRST letter of each word. "Juan Dela Cruz".',
+  q21:'INDEX(B2:D4, row=2, col=3): 2nd row of array is "South" row; 3rd col is Q3 = 175.',
+  q22:'MATCH("Cherry", A2:A6, 0): Apple=1, Banana=2, Cherry=3. Returns relative position 3.',
+  q23:'ROUNDUP always rounds UP regardless of decimal value. Even 4.01 → 5 at 0 decimals.',
+  q24:'COUNTA counts ALL non-empty cells: "Excel"(text), 42(num), TRUE(bool), 99(num) = 4.',
+  q25:'COUNT counts only NUMERIC values: 42 and 99 = 2. Text and booleans are ignored.',
+  q26:'LARGE(array,2) = 2nd largest. Sorted: 95,91,87,83,78 → 2nd = 91.',
+  q27:'ABS removes the negative sign. ABS(-258.75) = 258.75.',
+  q28:'2¹⁰ = 2×2×2×2×2×2×2×2×2×2 = 1024. (2^8=256, 2^9=512, 2^10=1024).',
+  q29:'#REF! appears when a formula references a deleted cell, row, or column.',
+  q30:'TRIM removes all leading/trailing spaces and reduces multiple interior spaces to one single space.',
+  q31:'North+Laptop rows: Row 2 (45,000) + Row 5 (38,000) = 83,000. Row 4 is North but Phone.',
+  q32:'Excel cannot find "SUMM" in its function library → #NAME? error.',
+  q33:'TEXT(12500,"#,##0.00") = "12,500.00". Comma separator + 2 decimal places. Note: it is TEXT, not a number.',
+  q34:'OR(90>100, 110>100) = OR(FALSE, TRUE) = TRUE → "HIGH".',
+  q35:'1200+800+3500+950+1100+2200 = 9,750. SUBTOTAL(9,...) with all rows visible = same as SUM.',
+  q36:'RIGHT("BES103COMPROG",7): length=13, last 7 chars = C-O-M-P-R-O-G = "COMPROG".',
+  q37:'LOWER converts every letter to lowercase. No exceptions.',
+  q38:'VLOOKUP finds "Banana" in row 3, col_index=3 returns the 3rd column (Stock = 250).',
+  q39:'(5+3)=8 first. 8×2=16. 10/2=5. 16-5=11. Order: parentheses → ×÷ → +−.',
+  q40:'CHOOSE(2, "Mon","Tue","Wed","Thu") → index 2 → "Tue".'
+};
+
+// ═══════════════════ MCQ DATA ═══════════════════
+const MCQData = [
+  { n:'M-01', q:'Which function returns the <b>k-th SMALLEST</b> value in a range?', opts:['MINIMUM()','SMALL()','BOTTOM()','MIN()'], ans:'B', fb:'SMALL(array, k) returns the k-th smallest value. SMALL(A1:A5, 1) = same as MIN; SMALL(A1:A5, 3) = 3rd smallest.' },
+  { n:'M-02', q:'<code>=COUNTIFS(A2:A10,"North",C2:C10,">5000")</code> counts cells where:', opts:['A="North" OR C>5000','A="North" AND C>5000','Only A="North"','Only C>5000'], ans:'B', fb:'COUNTIFS uses AND logic — ALL criteria must be satisfied simultaneously for a cell to be counted.' },
+  { n:'M-03', q:'What does the <code>#VALUE!</code> error indicate?', opts:['Formula references a deleted cell','Division by zero','Wrong data type used (e.g., text where a number is needed)','Function name is misspelled'], ans:'C', fb:'#VALUE! = wrong data type. Example: =5+"hello" triggers #VALUE! because you cannot perform math on text.' },
+  { n:'M-04', q:'<code>=VLOOKUP("X",A1:C10,2,TRUE)</code> with range_lookup=TRUE requires the first column to be:', opts:['Sorted descending','Sorted ascending','Filtered','Containing no blanks'], ans:'B', fb:'Approximate match (TRUE) requires the lookup column to be sorted in ASCENDING order, or results will be incorrect.' },
+  { n:'M-05', q:'Which formula correctly computes the MONTHLY payment on a ₱200,000 loan at 12% annual interest over 3 years?', opts:['=PMT(12,3,200000)','=PMT(0.12,36,200000)','=PMT(0.01,36,200000)','=PMT(12/3,36,200000)'], ans:'C', fb:'PMT(rate, nper, pv). Rate = 12%/12 months = 0.01. Nper = 3×12 = 36. PV = 200,000. So =PMT(0.01,36,200000).' },
+  { n:'M-06', q:'Which function counts cells containing ANY text in range A1:A10?', opts:['=COUNT(A1:A10)','=COUNTA(A1:A10)','=COUNTIF(A1:A10,"*")','=COUNTTEXT(A1:A10)'], ans:'C', fb:'COUNTIF with "*" matches any text string. COUNTA counts everything non-empty including numbers. COUNT counts only numbers.' },
+  { n:'M-07', q:'What is the result of <code>=ROUNDDOWN(8.9,0)</code>?', opts:['9','8.9','8','10'], ans:'C', fb:'ROUNDDOWN always rounds TOWARD zero. 8.9 → rounds down to 8, ignoring that 9 ≥ 5.' },
+  { n:'M-08', q:'HLOOKUP differs from VLOOKUP in that it searches the:', opts:['First row (horizontal)','Last column','Middle of a table','First column (vertical)'], ans:'A', fb:'HLOOKUP = Horizontal Lookup → searches the FIRST ROW of the table and returns a value from a specified row below it.' },
+  { n:'M-09', q:'<code>=A1&" "&B1</code> produces the same result as:', opts:['=SUM(A1,B1)','=JOIN(A1," ",B1)','=CONCATENATE(A1," ",B1)','=TEXT(A1,B1)'], ans:'C', fb:'The & operator is shorthand for CONCATENATE. Both join text strings. =A1&" "&B1 = =CONCATENATE(A1," ",B1).' },
+  { n:'M-10', q:'Which Excel error appears when a formula references a range that does not intersect?', opts:['#REF!','#N/A','#NULL!','#VALUE!'], ans:'C', fb:'#NULL! occurs when you use a space (range intersection operator) between two ranges that don\'t actually intersect. Example: =SUM(A1:A5 C1:C5).' },
+  { n:'M-11', q:'The keyboard shortcut <code>Alt + =</code> does what in Excel?', opts:['Opens the formula wizard','Inserts =SUM() with a suggested range (AutoSum)','Toggles formula view','Selects all cells'], ans:'B', fb:'Alt + = is the AutoSum shortcut. It inserts =SUM() and automatically selects the adjacent range above or to the left.' },
+  { n:'M-12', q:'<code>=IF(ISBLANK(A1),"Empty","Has Data")</code> returns "Empty" when:', opts:['A1 contains 0','A1 contains FALSE','A1 has no content at all','A1 contains a space'], ans:'C', fb:'ISBLANK returns TRUE only if the cell is completely empty — no space, no zero, no formula. A space character IS data.' },
+  { n:'M-13', q:'In VLOOKUP, what does col_index_num count from?', opts:['Column A of the spreadsheet (A=1)','The first column of the table_array (that column = 1)','The active cell position','The last column going backward'], ans:'B', fb:'col_index_num counts from the first column of table_array, NOT from column A. If your table starts at column C, col_index 1 = column C.' },
+  { n:'M-14', q:'<code>=LARGE(B2:B10,1)</code> is equivalent to which simpler function?', opts:['=COUNT(B2:B10)','=AVERAGE(B2:B10)','=MAX(B2:B10)','=SMALL(B2:B10,1)'], ans:'C', fb:'LARGE(array,1) = the 1st largest = MAX. SMALL(array,1) = the 1st smallest = MIN.' },
+  { n:'M-15', q:'What does pressing <code>F4</code> do after clicking a cell reference in the formula bar?', opts:['Deletes the formula','Cycles through absolute/relative reference combinations ($A$1 → A$1 → $A1 → A1)','Copies the cell to clipboard','Opens Find and Replace'], ans:'B', fb:'F4 toggles: fully absolute ($A$1) → row locked (A$1) → column locked ($A1) → fully relative (A1) → back to absolute.' },
+  { n:'M-16', q:'The <code>#N/A</code> error in VLOOKUP most commonly means:', opts:['The formula bar is empty','The lookup value was not found in the lookup column','The table_array is formatted wrong','The col_index exceeds the table width'], ans:'B', fb:'#N/A = "Not Available" — the lookup value does not exist in the first column of the table. Use IFERROR to display a custom message.' },
+  { n:'M-17', q:'Which keyboard shortcut toggles the display of all cell formulas simultaneously?', opts:['Ctrl+F','Ctrl+` (backtick)','Ctrl+Shift+F','Alt+F4'], ans:'B', fb:'Ctrl+` (the backtick/accent key, left of 1) toggles between showing formulas and showing calculated values in all cells.' },
+  { n:'M-18', q:'<code>=AVERAGEIF(B2:B10,">75",C2:C10)</code> calculates:', opts:['Average of B2:B10 where average>75','Average of C2:C10 for rows where B is greater than 75','Count of values >75 in B2:B10','Average of all cells >75 in either range'], ans:'B', fb:'AVERAGEIF(range, criteria, average_range): tests the criteria on "range" and averages the corresponding values in "average_range".' },
+  { n:'M-19', q:'Which of these IS a valid rule for naming a Named Range in Excel?', opts:['Name can start with a number','Name can contain spaces','Name is NOT case-sensitive (Sales = SALES)','Name cannot exceed 10 characters'], ans:'C', fb:'Named ranges: NOT case-sensitive (Sales=SALES), cannot start with a number, no spaces (use _ or .), max 255 characters.' },
+  { n:'M-20', q:'The Freeze Panes command is found in which Excel ribbon tab?', opts:['Home','Insert','View','Page Layout'], ans:'C', fb:'Freeze Panes is in the View tab → Window group. It locks rows/columns on screen while scrolling (does NOT affect printing).' },
+  { n:'M-21', q:'<code>=MOD(100,9)</code> returns:', opts:['11','1','10','9'], ans:'B', fb:'100 ÷ 9 = 11 with remainder 1 (since 11×9=99, 100-99=1). MOD(100,9) = 1.' },
+  { n:'M-22', q:'Which function suppresses any Excel error and returns a custom value instead?', opts:['ISERROR()','IFERROR()','ERRORIF()','HANDLEERROR()'], ans:'B', fb:'IFERROR(value, value_if_error) catches ANY error and returns your specified alternative — text, number, another formula, or empty "".' },
+  { n:'M-23', q:'What does the Fill Handle in Excel do when you drag it?', opts:['Applies cell formatting only','Copies or extends a data series to adjacent cells','Adds a border around cells','Locks the cell against editing'], ans:'B', fb:'Fill Handle (small square at bottom-right of selected cell): drag to copy the content or continue a recognized series (numbers, dates, months).' },
+  { n:'M-24', q:'<code>=SUMIF(A2:A8,">50")</code> — with only 2 arguments — sums values in:', opts:['A separate column automatically','The range A2:A8 itself where values are >50','Both the criteria range and sum range','#VALUE! — SUMIF requires 3 arguments'], ans:'B', fb:'SUMIF\'s third argument (sum_range) is optional. When omitted, it sums values directly from the criteria range that meet the criteria.' },
+  { n:'M-25', q:'When you copy a cell containing <code>=$A$1+B2</code> one row DOWN, the formula becomes:', opts:['=$A$1+B2','=$A$2+B3','=$A$1+B3','=$A$1+B2 (unchanged)'], ans:'C', fb:'$A$1 is absolute — stays fixed. B2 is relative — shifts one row down to B3. Result: =$A$1+B3.' },
+  { n:'M-26', q:'The SUBTOTAL function with function_num <b>109</b> computes SUM while:', opts:['Including hidden rows','Excluding manually hidden rows','Including only filtered rows','Rounding the result'], ans:'B', fb:'Function numbers 101-111 EXCLUDE manually hidden rows. Function numbers 1-11 include them. 9=SUM including hidden; 109=SUM excluding hidden.' },
+  { n:'M-27', q:'<code>=LEFT("",3)</code> — applied to an empty string — returns:', opts:['#VALUE!','#ERROR!','An empty string ""','0'], ans:'C', fb:'LEFT is forgiving. LEFT("",3) returns "" (empty string). LEFT("AB",10) returns "AB" (entire string, no error).' },
+  { n:'M-28', q:'Which Excel keyboard shortcut moves the cursor directly to cell A1?', opts:['Ctrl+End','Ctrl+Home','Alt+Home','Ctrl+A'], ans:'B', fb:'Ctrl+Home jumps to cell A1. Ctrl+End jumps to the last used cell. These are essential navigation shortcuts.' },
+  { n:'M-29', q:'WHAT does a column displaying <code>###</code> (hash symbols) indicate?', opts:['The formula has a critical error','The column is too narrow to display the value','The cell is password-protected','The value exceeds the maximum number'], ans:'B', fb:'### means the column is too narrow to display the number. Simply widen the column (double-click the column border to auto-fit).' },
+  { n:'M-30', q:'<code>=INDEX(A1:C5,0,2)</code> — with row_num = 0 — returns:', opts:['The value 0','#REF! error','The entire 2nd column of the range','Only the first cell of column 2'], ans:'C', fb:'When row_num = 0 in INDEX, it returns the entire specified column as an array. Useful in array formulas combined with MATCH.' }
+];
+
+// ═══════════════════ T/F DATA ═══════════════════
+const TFData = [
+  { q:'<code>=LEFT("ABC",10)</code> returns an error because 10 exceeds the string length of 3.', ans:false, fb:'FALSE. LEFT is forgiving — when num_chars exceeds the string length, it simply returns the entire string: "ABC". No error.' },
+  { q:'VLOOKUP can search any column of the table_array, not just the first.', ans:false, fb:'FALSE. VLOOKUP ALWAYS searches the FIRST (leftmost) column of the table_array. Use INDEX/MATCH if you need to search other columns.' },
+  { q:'<code>=ROUND(2.5,0)</code> returns 3 in Excel.', ans:true, fb:'TRUE. Excel uses "round half away from zero" for positive numbers: 2.5 rounds UP to 3.' },
+  { q:'SUMIF and SUMIFS produce the same result when given only one criteria pair.', ans:true, fb:'TRUE. SUMIFS(sum_range, criteria_range1, criteria1) is equivalent to SUMIF(criteria_range, criteria, sum_range) for a single condition.' },
+  { q:'<code>=LEN(" ")</code> returns 0 because the cell only has a space.', ans:false, fb:'FALSE. A space IS a character. LEN(" ") = 1. Only a completely empty cell returns LEN("") = 0.' },
+  { q:'The #REF! error is caused by mistyping a function name.', ans:false, fb:'FALSE. #NAME? is caused by a misspelled function name. #REF! means a formula references a cell that has been deleted.' },
+  { q:'Freeze Panes affects how a spreadsheet prints (frozen rows appear on every printed page).', ans:false, fb:'FALSE. Freeze Panes ONLY affects the on-screen scrolling view. For printing headers on every page, use Page Layout → Print Titles.' },
+  { q:'<code>=MOD(12,4)</code> returns 0.', ans:true, fb:'TRUE. 12 ÷ 4 = 3 exactly, with no remainder. MOD(12,4) = 0.' },
+  { q:'Named ranges in Excel ARE case-sensitive: "Sales" and "SALES" are treated as different names.', ans:false, fb:'FALSE. Named ranges are NOT case-sensitive in Excel. "Sales" and "SALES" refer to the same range.' },
+  { q:'<code>=AVERAGE()</code> skips blank cells in its calculation (they do not count as zeros).', ans:true, fb:'TRUE. AVERAGE ignores blank cells — it divides only by the count of cells that actually contain numbers.' },
+  { q:'VLOOKUP with range_lookup = TRUE (approximate match) can return incorrect results if the data is not sorted ascending.', ans:true, fb:'TRUE. Approximate match REQUIRES the lookup column to be sorted ascending. Without it, results can be completely wrong.' },
+  { q:'<code>=COUNTA(A1:A5)</code> counts only numeric cells in the range.', ans:false, fb:'FALSE. COUNTA counts ALL non-empty cells — numbers, text, booleans, errors. COUNT (without A) counts only numeric values.' },
+  { q:'The formula <code>=TODAY()</code> and <code>=NOW()</code> both return exactly the same value.', ans:false, fb:'FALSE. TODAY() returns only the current date. NOW() returns the current date AND time. They are different functions.' },
+  { q:'Using <code>$A$1</code> in a formula ensures the reference stays locked regardless of where the formula is copied.', ans:true, fb:'TRUE. $A$1 is a fully absolute reference — the $ locks both the column (A) and the row (1). Neither adjusts when copied.' },
+  { q:'<code>=COUNTIF(A1:A10,">0")</code> counts cells equal to zero.', ans:false, fb:'FALSE. ">0" means strictly GREATER THAN zero. Zero itself is NOT counted. Use ">=0" to include zero.' },
+  { q:'IFERROR can only return an empty string ("") as its error output.', ans:false, fb:'FALSE. IFERROR(value, value_if_error) can return anything — a number, text, another formula, 0, TRUE, or "" — when an error occurs.' },
+  { q:'Pressing Ctrl+Z in Excel undoes the most recent action.', ans:true, fb:'TRUE. Ctrl+Z = Undo. Ctrl+Y = Redo. Multiple presses undo multiple actions in reverse sequence.' },
+  { q:'<code>=ROUNDUP(3.001,0)</code> returns 4.', ans:true, fb:'TRUE. ROUNDUP always rounds AWAY from zero regardless of how small the decimal. Even 3.001 → 4 at 0 decimal places.' },
+  { q:'An Excel formula MUST start with the equals sign (=) to be calculated.', ans:true, fb:'TRUE. Without the = prefix, Excel treats the entry as plain text and displays it as-is. Formulas must begin with =.' },
+  { q:'The MATCH function returns the actual VALUE it finds, not its position.', ans:false, fb:'FALSE. MATCH returns the RELATIVE POSITION (a number like 1, 2, 3) of the found item within the range. INDEX returns the value.' }
+];
+
+// ═══════════════════ ID DATA ═══════════════════
+const IDData = [
+  { n:'ID-01', q:'This function returns TRUE if a cell is completely empty, and FALSE otherwise.', hint:'Starts with IS. 7 letters total.', ans:['isblank'] },
+  { n:'ID-02', q:'The Excel error code displayed when dividing any number by zero.', hint:'Format: #XXX/X!', ans:['#div/0!','#div/0','div/0!'] },
+  { n:'ID-03', q:'This function extracts characters from the MIDDLE of a text string, given a start position and character count.', hint:'3-letter function name.', ans:['mid'] },
+  { n:'ID-04', q:'The error code displayed when a formula references a cell that was deleted.', hint:'Short word for "reference" + exclamation.', ans:['#ref!','#ref','ref!'] },
+  { n:'ID-05', q:'This function looks up a value in the FIRST ROW (not column) of a table and returns data from a row below.', hint:'H = Horizontal. Opposite of V.', ans:['hlookup'] },
+  { n:'ID-06', q:'The Excel error that appears when a function name is misspelled (e.g., =SUMM instead of =SUM).', hint:'One word + question mark. It\'s asking "what name?"', ans:['#name?','#name','name?'] },
+  { n:'ID-07', q:'This function counts ALL non-empty cells in a range, including text, numbers, and booleans.', hint:'Like COUNT but with an extra letter at the end.', ans:['counta'] },
+  { n:'ID-08', q:'This function converts a number to a formatted TEXT string using a format code like "0.00%" or "#,##0".', hint:'4-letter function. Used for number-to-text conversion with a mask.', ans:['text'] },
+  { n:'ID-09', q:'This function sums values in a range that meet MULTIPLE criteria across multiple ranges simultaneously.', hint:'Like SUMIF but plural.', ans:['sumifs'] },
+  { n:'ID-10', q:'This function returns the number of characters in a text string, counting every character including spaces.', hint:'3 letters. Think "length."', ans:['len'] }
+];
+
+// ═══════════════════ TAB SWITCHING ═══════════════════
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════ SCORE MANAGEMENT ═══════════════════
+function updateGlobalScore() {
+  const total = scores.scenario + scores.mcq + scores.tf + scores.id;
+  document.getElementById('sc-total').textContent = total + ' / 100';
+  document.getElementById('sc-pct').textContent = total + '%';
+  document.getElementById('sc-bar').style.width = total + '%';
+}
+
+function updateSectionScore(section) {
+  const s = scores[section], t = totals[section];
+  const el = document.getElementById('sc-' + section);
+  const bar = document.getElementById('bar-' + section);
+  if (el) el.textContent = s + '/' + t;
+  if (bar) bar.style.width = Math.round(s / t * 100) + '%';
+}
+
+// ═══════════════════ SCENARIO MCQ ═══════════════════
+function answerMCQ(optEl) {
+  const qId = optEl.dataset.q;
+  if (answered[qId]) return;
+
+  const card = document.getElementById(qId);
+  const allOpts = card.querySelectorAll('.opt');
+  const chosen = optEl.querySelector('.optltr').textContent.trim();
+  const correct = SA[qId];
+  const isScenario = qId.startsWith('q');
+  const section = isScenario ? 'scenario' : 'mcq';
+
+  answered[qId] = true;
+  allOpts.forEach(o => { o.classList.add('frozen'); o.onclick = null; });
+
+  const fb = document.getElementById('fb-' + qId);
+
+  if (chosen === correct) {
+    optEl.classList.add('sel-ok');
+    card.classList.add('correct');
+    scores[section]++;
+    const explanation = SF[qId] || mcqFb[qId] || '';
+    fb.innerHTML = `<strong>✓ Correct!</strong>${explanation}`;
+    fb.className = 'feedback ok show';
+  } else {
+    optEl.classList.add('sel-no');
+    card.classList.add('wrong');
+    allOpts.forEach(o => {
+      if (o.querySelector('.optltr').textContent.trim() === correct) o.classList.add('reveal');
+    });
+    const explanation = SF[qId] || mcqFb[qId] || '';
+    fb.innerHTML = `<strong>✗ Incorrect.</strong>${explanation}`;
+    fb.className = 'feedback no show';
+  }
+
+  updateSectionScore(section);
+  updateGlobalScore();
+}
+
+// ═══════════════════ BUILD MCQ SECTION ═══════════════════
+const mcqFb = {};
+
+function buildMCQ() {
+  const container = document.getElementById('mcq-container');
+  MCQData.forEach((item, i) => {
+    const qId = 'mcq' + (i + 1);
+    mcqFb[qId] = item.fb;
+    const optHtml = item.opts.map((opt, j) => {
+      const letter = ['A','B','C','D'][j];
+      return `<div class="opt" data-q="${qId}" data-c="${letter}" onclick="answerMCQ(this)"><span class="optltr">${letter}</span>${opt}</div>`;
+    }).join('');
+
+    container.innerHTML += `
+    <div class="qcard" id="${qId}">
+      <div class="qhead"><span class="qnum">${item.n}</span><span class="qtext">${item.q}</span></div>
+      <div class="qbody">
+        <div class="opts">${optHtml}</div>
+        <div class="feedback" id="fb-${qId}"></div>
+      </div>
+    </div>`;
+  });
+
+  // Patch MCQ answers using mcqFb keys
+  MCQData.forEach((item, i) => {
+    SA['mcq' + (i + 1)] = item.ans;
+  });
+}
+
+// ═══════════════════ BUILD T/F SECTION ═══════════════════
+function buildTF() {
+  const container = document.getElementById('tf-container');
+  TFData.forEach((item, i) => {
+    const qId = 'tf' + (i + 1);
+    container.innerHTML += `
+    <div class="qcard" id="${qId}">
+      <div class="qhead"><span class="qnum">TF-${String(i+1).padStart(2,'0')}</span><span class="qtext">${item.q}</span></div>
+      <div class="qbody">
+        <div class="tf-row">
+          <div class="tf-btn true-btn" onclick="answerTF(this,'${qId}',true,${item.ans},'${escFb(item.fb)}')">◆ TRUE</div>
+          <div class="tf-btn false-btn" onclick="answerTF(this,'${qId}',false,${item.ans},'${escFb(item.fb)}')">✕ FALSE</div>
+        </div>
+        <div class="feedback" id="fb-${qId}"></div>
+      </div>
+    </div>`;
+  });
+}
+
+function escFb(s) { return s.replace(/'/g,"&#39;").replace(/\\/g,'\\\\'); }
+
+function answerTF(btn, qId, chosen, correct, explain) {
+  if (answered[qId]) return;
+  answered[qId] = true;
+
+  const card = document.getElementById(qId);
+  const allBtns = card.querySelectorAll('.tf-btn');
+  allBtns.forEach(b => { b.classList.add('frozen'); b.onclick = null; });
+
+  const fb = document.getElementById('fb-' + qId);
+
+  if (chosen === correct) {
+    btn.classList.add('sel-ok');
+    card.classList.add('correct');
+    scores.tf++;
+    fb.innerHTML = `<strong>✓ Correct!</strong>${explain}`;
+    fb.className = 'feedback ok show';
+  } else {
+    btn.classList.add('sel-no');
+    card.classList.add('wrong');
+    allBtns.forEach(b => {
+      if ((correct === true && b.classList.contains('true-btn')) ||
+          (correct === false && b.classList.contains('false-btn'))) {
+        b.classList.add('reveal');
+      }
+    });
+    fb.innerHTML = `<strong>✗ Incorrect.</strong>${explain}`;
+    fb.className = 'feedback no show';
+  }
+
+  updateSectionScore('tf');
+  updateGlobalScore();
+}
+
+// ═══════════════════ BUILD IDENTIFICATION SECTION ═══════════════════
+function buildID() {
+  const container = document.getElementById('id-container');
+  IDData.forEach((item, i) => {
+    const qId = 'id' + (i + 1);
+    container.innerHTML += `
+    <div class="qcard" id="${qId}">
+      <div class="qhead"><span class="qnum">${item.n}</span><span class="qtext">${item.q}</span></div>
+      <div class="qbody">
+        <div class="id-hint">💡 Hint: ${item.hint}</div>
+        <div class="id-row">
+          <input class="id-inp" id="inp-${qId}" type="text" placeholder="Type your answer here...">
+          <button class="id-btn" id="btn-${qId}" onclick="answerID('${qId}')">Check ↵</button>
+        </div>
+        <div class="feedback" id="fb-${qId}"></div>
+      </div>
+    </div>`;
+  });
+
+  // Bind Enter key
+  setTimeout(() => {
+    document.querySelectorAll('.id-inp').forEach(inp => {
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          const qId = inp.id.replace('inp-', '');
+          answerID(qId);
+        }
+      });
+    });
+  }, 0);
+}
+
+function answerID(qId) {
+  if (answered[qId]) return;
+  const idx = parseInt(qId.replace('id', '')) - 1;
+  const inp = document.getElementById('inp-' + qId);
+  const btn = document.getElementById('btn-' + qId);
+  const fb  = document.getElementById('fb-' + qId);
+  const card = document.getElementById(qId);
+
+  const raw = inp.value.trim().toLowerCase().replace(/\s+/g, ' ');
+  if (!raw) {
+    fb.innerHTML = '<strong>⚠️ Enter an answer first.</strong>';
+    fb.className = 'feedback info show';
+    return;
+  }
+
+  const accepted = IDData[idx].ans;
+  const isOk = accepted.some(a => raw === a.toLowerCase() || raw.includes(a.toLowerCase()) || a.toLowerCase().includes(raw));
+
+  answered[qId] = true;
+  inp.disabled = true;
+  btn.disabled = true;
+
+  if (isOk) {
+    inp.classList.add('ok');
+    card.classList.add('correct');
+    scores.id++;
+    fb.innerHTML = `<strong>✓ Correct!</strong>Answer: <code>${accepted[0].toUpperCase()}</code>`;
+    fb.className = 'feedback ok show';
+  } else {
+    inp.classList.add('no');
+    card.classList.add('wrong');
+    fb.innerHTML = `<strong>✗ Incorrect.</strong>Correct answer: <code>${accepted[0].toUpperCase()}</code>`;
+    fb.className = 'feedback no show';
+  }
+
+  updateSectionScore('id');
+  updateGlobalScore();
+}
+
+// ═══════════════════ RESET ═══════════════════
+function resetAll() {
+  if (!confirm('Reset all answers and scores?')) return;
+
+  scores = { scenario: 0, mcq: 0, tf: 0, id: 0 };
+  answered = {};
+  updateGlobalScore();
+  ['scenario','mcq','tf','id'].forEach(s => updateSectionScore(s));
+
+  // Reset scenario cards
+  document.querySelectorAll('.qcard').forEach(card => {
+    card.classList.remove('correct','wrong','done');
+    card.querySelectorAll('.opt').forEach(o => o.classList.remove('sel-ok','sel-no','reveal','frozen'));
+    card.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('sel-ok','sel-no','reveal','frozen'));
+    card.querySelectorAll('.feedback').forEach(f => { f.className = 'feedback'; f.innerHTML = ''; });
+    card.querySelectorAll('.id-inp').forEach(inp => { inp.classList.remove('ok','no'); inp.disabled = false; inp.value = ''; });
+    card.querySelectorAll('.id-btn').forEach(btn => { btn.disabled = false; });
+  });
+
+  // Rebuild dynamic sections
+  document.getElementById('mcq-container').innerHTML = '';
+  document.getElementById('tf-container').innerHTML = '';
+  document.getElementById('id-container').innerHTML = '';
+  buildMCQ();
+  buildTF();
+  buildID();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════════════ INIT ═══════════════════
+buildMCQ();
+buildTF();
+buildID();
+</script>
+</body>
+</html>
